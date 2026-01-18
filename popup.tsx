@@ -7,11 +7,10 @@ function IndexPopup() {
   const [err, setErr] = useState("")
 
   useEffect(() => {
-    console.log('--Saved conf 1');
     async function loadSavedConfig() {
       const saved_config = await get_saved_torrent_config();
+
       if (saved_config) {
-        console.log('--Saved conf', saved_config);
         setHost(saved_config.host);
         setSavePath(saved_config.save_path);
       }
@@ -59,20 +58,20 @@ function IndexPopup() {
         <button type="submit">save</button>
       </form>
 
-      <h5>{host}</h5>
+      <h5>{err}</h5>
     </div>
   )
 }
 
 async function get_saved_torrent_config(): TorrentConfig | null {
 
-  let torrent_config = await chrome.storage.local.get(["torrent_config"]);
+  let { torrent_config } = await chrome.storage.local.get(["torrent_config"]);
 
   if (!torrent_config || Object.keys(torrent_config).length === 0) {
     return null
   }
-
-  return torrent_config as TorrentConfig;
+  console.log('--GET saved', torrent_config);
+  return torrent_config;
 }
 
 export default IndexPopup
