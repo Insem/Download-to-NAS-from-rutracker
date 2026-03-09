@@ -1,10 +1,17 @@
+import { sendToBackground } from "@plasmohq/messaging";
+import { log } from "console";
 import { useEffect, useState } from "react"
 import TorrentConfig from "~assets/types/popup";
 
 function IndexPopup() {
-  const [host, setHost] = useState("")
+  let [host, setHost] = useState("")
   const [save_path, setSavePath] = useState("")
+  const [token, setToken] = useState("")
+  const [login, setLogin] = useState("admin")
+  const [password, setPassword] = useState("admin")
   const [err, setErr] = useState("")
+  const [token_form_valid, setTokenFormValid] = useState(false);
+
 
   useEffect(() => {
     async function loadSavedConfig() {
@@ -19,12 +26,21 @@ function IndexPopup() {
     loadSavedConfig();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (host == "" || !host || login == "" || !login || password == "" || !password) {
+      setTokenFormValid(false)
+    } else {
+      setTokenFormValid(true)
+    }
+
+  }, [host, login, password]);
+
+  const handleConfigSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       const torrent_config = new TorrentConfig(
-        host, save_path
+        host, save_path, token
       );
 
       console.log('Отправленные данные:', torrent_config);
@@ -39,23 +55,71 @@ function IndexPopup() {
     }
   };
 
+  const handleTokenSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      host = "192.168.0.120:8080"
+      const url = `http://${host}/api/v2/auth/login?username=${login}&password=${password}`;
+      console.log('--Token', host, login, password, url);
+      const result = await fetch(url, {
+        method: 'POST'
+      });
+      const options = {
+        method: "POST",
+        headers: {
+        }
+      }
+      // Send request to background script
+      // const result = await sendToBackground({
+      //   name: "http", // This should match your background handler name
+      //   body: {
+      //     url: url,
+      //     options: options
+      //   }
+      // })
+      //const cookies = token_res.headers
+      // console.log("TOKEN", chrome.cookies.get("SID"));
+
+      chrome.cookies.get({ url, name: 'SID' }, function(cookie) {
+        // do something with the cookie
+        const token = cookie?.value;
+        if (!token || token == "") {
+          return setErr("Failed to get Qbittorrent token. Check correctnes of your host")
+        }
+
+        setToken(cookie?.value);
+      });
+
+      setLogin("");
+      setPassword("");
+    } catch (e: Record<string, unknown>) {
+      // if (e.user_err) {
+      //   setErr(e.message);
+      // }
+
+      console.error(e);
+    }
+  };
+
   return (
     <div
       style={{
         padding: 16
       }}>
-      <h2>
-        Welcome to your{" "}
-        <a href="https://www.plasmo.com" target="_blank">
-          Plasmo
-        </a>{" "}
-        Extension!
-      </h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleConfigSubmit}>
         <input placeholder="Default host" onChange={(e) => setHost(e.target.value)} value={host} />
         <input placeholder="Save file path" onChange={(e) => setSavePath(e.target.value)} value={save_path} />
+        <input placeholder="Auth token" onChange={(e) => setToken(e.target.value)} value={token} />
 
         <button type="submit">save</button>
+      </form>
+
+      <form onSubmit={handleTokenSubmit} className={token_form_valid ? "token_form_valid" : "token_form_invalid"}>
+        <input placeholder="Login" onChange={(e) => setLogin(e.target.value)} value={login} />
+        <input placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password} />
+
+        <button type="submit">Get token</button>
       </form>
 
       <h5>{err}</h5>

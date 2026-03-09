@@ -1,51 +1,46 @@
+import { FC } from "react";
+import { createRoot } from "react-dom/client";
+import type TorrentConfig from "~assets/types/popup";
 
-import { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
+const DirectDownloadLink: FC<{ magnet_link: string, torrent_config: TorrentConfig }> = ({ magnet_link, torrent_config }) => {
 
-// (async () => {
-//   const { torrent_config } = await chrome.storage.local.get(["torrent_config"]);
-//
-//   console.log("--TorrentConfig", torrent_config, magnet_link_tag);
-//
-//   if (magnet_link_tag) {
-//     // magnet_link_tag.innerHTML = ''
-//     const root = createRoot(magnet_link_tag);
-//
-//     root.render(<DirectlyDownloadLink />);
-//   }
-// })();
+  const handleClick = async () => {
+    console.log("Magnet URL:", magnet_link, torrent_config);
 
-export const config: PlasmoCSConfig = {
-  run_at: "document_end"
-}
-type MagnetButtonProps = {
-  magnetUrl: string
-  originalElement?: Element
-}
-export const getInlineAnchor: PlasmoGetInlineAnchor = async () => {
-  // Find the first magnet link on the page
-  const magnet_link_tag = document.getElementsByClassName("med magnet-link")[0];
 
-  if (!magnet_link_tag) return null
-
-  return {
-    ttttt: "rgdfgfdf",
-    element: magnet_link_tag.parentNode,
-    props: {
-      magnetUrl: magnet_link_tag.href,
-      originalElement: magnet_link_tag
-    }
-  } as MagnetButtonProps
-}
-
-const DirectDownloadLink = (props: MagnetButtonProps) => {
-
-  const handleClick = () => {
-    console.log("Magnet URL:", props)
   };
 
-  return <div onClick={ handleClick } > Скачать < /div>
+  return <div onClick={handleClick} > Скачать </div>
 }
 
-export const getShadowHostId = () => "my-unique-magnet-replacer"
+console.log("--DOMAIN", window.location.hostname);
+
+export const getRootContainer = () =>
+  new Promise((resolve) => {
+    const checkInterval = setInterval(() => {
+      const magnet_link_tag = document.getElementsByClassName("med magnet-link")[0];
+      const magnet_link = magnet_link_tag.href;
+      const rootContainer = magnet_link_tag.parentElement
+
+      if (rootContainer) {
+        clearInterval(checkInterval)
+        resolve({ rootContainer, magnet_link })
+      }
+    }, 137)
+  })
+
+export const render = async ({
+  createRootContainer // This creates the default root container
+}) => {
+  const { rootContainer, magnet_link } = await createRootContainer()
+
+  console.log('--Root', rootContainer, magnet_link);
+
+  const { torrent_config } = await chrome.storage.local.get(["torrent_config"]);
+  const root = createRoot(rootContainer);
+
+  root.render(<DirectDownloadLink magnet_link={magnet_link} torrent_config={torrent_config} />);
+
+}
 
 export default DirectDownloadLink
