@@ -70,14 +70,6 @@ function IndexPopup() {
         headers: {
         }
       }
-      // Send request to background script
-      // const result = await sendToBackground({
-      //   name: "http", // This should match your background handler name
-      //   body: {
-      //     url: url,
-      //     options: options
-      //   }
-      // })
       //const cookies = token_res.headers
       // console.log("TOKEN", chrome.cookies.get("SID"));
 
@@ -94,9 +86,9 @@ function IndexPopup() {
       setLogin("");
       setPassword("");
     } catch (e: Record<string, unknown>) {
-      // if (e.user_err) {
-      //   setErr(e.message);
-      // }
+      if (e.user_err) {
+        setErr(e.message);
+      }
 
       console.error(e);
     }

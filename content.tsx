@@ -1,3 +1,4 @@
+import { sendToBackground } from "@plasmohq/messaging";
 import { FC } from "react";
 import { createRoot } from "react-dom/client";
 import type TorrentConfig from "~assets/types/popup";
@@ -6,7 +7,28 @@ const DirectDownloadLink: FC<{ magnet_link: string, torrent_config: TorrentConfi
 
   const handleClick = async () => {
     console.log("Magnet URL:", magnet_link, torrent_config);
+    const { host, token } = torrent_config;
+    // const formData = new FormData();
 
+    // formData.append('urls', magnet_link);
+
+    // Send request to background script
+    const result = await sendToBackground({
+      name: "http", // This should match your background handler name
+      body: {
+        url: `http://${host}/api/v2/torrents/add`,
+        options: {
+          isFormData: true,
+          method: 'POST',
+          body: [{ field: 'urls', data: magnet_link }],
+          headers: {
+            'Cookie': token,
+          }
+        }
+      }
+    });
+
+    console.log("--RESULT", result);
 
   };
 

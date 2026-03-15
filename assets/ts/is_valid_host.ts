@@ -1,21 +1,39 @@
-export default function is_valid_host(host: string) {
-  // Удаляем протокол если есть
-  host = host.replace(/^(https?:\/\/)?(www\.)?/, '');
+export default function is_valid_host(hostString: string): boolean {
+  // Regular expression for validating host:port format
+  // Supports IPv4, IPv6, hostnames, and ports
+  const hostPattern = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])|(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})|(\[([0-9a-fA-F:]+)\]):(\d{1,5})$/;
 
-  // Проверяем, не пустая ли строка
-  if (!host || host.length > 255) return false;
+  // Alternative simpler regex for common cases
+  const simpleHostPattern = /^([a-zA-Z0-9.-]+|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|\[[0-9a-fA-F:]+\]):(\d{1,5})$/;
 
-  // Проверяем IPv4
-  if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(host)) {
-    return true;
+  // Check if string matches the pattern
+  if (!simpleHostPattern.test(hostString)) {
+    return false;
   }
 
-  // Проверяем IPv6
-  if (/^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/.test(host)) {
-    return true;
+  // Split into host and port parts
+  const lastColonIndex = hostString.lastIndexOf(':');
+  const host = hostString.substring(0, lastColonIndex);
+  const portStr = hostString.substring(lastColonIndex + 1);
+
+  // Validate port number (1-65535)
+  const port = parseInt(portStr, 10);
+  if (isNaN(port) || port < 1 || port > 65535) {
+    return false;
   }
 
-  // Проверяем доменное имя
-  const domainRegex = /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
-  return domainRegex.test(host);
+  // Special validation for IPv4 addresses
+  if (host.includes('.')) {
+    const ipParts = host.split('.');
+    if (ipParts.length === 4) {
+      for (const part of ipParts) {
+        const num = parseInt(part, 10);
+        if (isNaN(num) || num < 0 || num > 255) {
+          return false;
+        }
+      }
+    }
+  }
+
+  return true;
 }
