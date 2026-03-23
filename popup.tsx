@@ -1,7 +1,9 @@
 import { sendToBackground } from "@plasmohq/messaging";
 import { log } from "console";
 import { useEffect, useState } from "react"
+
 import TorrentConfig from "~assets/types/popup";
+import "~assets/css/popup.css"
 
 function IndexPopup() {
   let [host, setHost] = useState("")
@@ -95,21 +97,20 @@ function IndexPopup() {
   };
 
   return (
-    <div
-      style={{
-        padding: 16
-      }}>
+    <div className="container">
       <form onSubmit={handleConfigSubmit}>
-        <input placeholder="Default host" onChange={(e) => setHost(e.target.value)} value={host} />
-        <input placeholder="Save file path" onChange={(e) => setSavePath(e.target.value)} value={save_path} />
-        <input placeholder="Auth token" onChange={(e) => setToken(e.target.value)} value={token} />
+        <div className="formTitle">Настройки торрент трекера</div>
+        <input placeholder="Адрес хоста" onChange={(e) => setHost(e.target.value)} value={host} />
+        <input placeholder="Путь к файлам на хосте" onChange={(e) => setSavePath(e.target.value)} value={save_path} />
+        <input placeholder="Токен аутентификации" onChange={(e) => setToken(e.target.value)} value={token} />
 
         <button type="submit">save</button>
       </form>
-
+      <div className="divider"></div>
       <form onSubmit={handleTokenSubmit} className={token_form_valid ? "token_form_valid" : "token_form_invalid"}>
-        <input placeholder="Login" onChange={(e) => setLogin(e.target.value)} value={login} />
-        <input placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password} />
+        <div className="formTitle">Запросить токен</div>
+        <input placeholder="Логин" onChange={(e) => setLogin(e.target.value)} value={login} />
+        <input placeholder="Пароль" onChange={(e) => setPassword(e.target.value)} value={password} />
 
         <button type="submit">Get token</button>
       </form>

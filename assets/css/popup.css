@@ -1,0 +1,155 @@
+body {
+  margin: 0px;
+}
+
+.container {
+  padding: 24px;
+  width: 450px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+/* Формы */
+.container form {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.container form:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.container form:last-child {
+  margin-bottom: 0;
+}
+
+/* Заголовки форм (добавьте, если нужно) */
+.formTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
+  border-left: 4px solid #667eea;
+  padding-left: 12px;
+}
+
+/* Поля ввода */
+.container form input {
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 14px;
+  transition: all 0.2s;
+  background: white;
+  box-sizing: border-box;
+}
+
+.container form input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.container form input::placeholder {
+  color: #a0aec0;
+}
+
+/* Кнопки */
+.container form button {
+  width: 100%;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.container form button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.container form button:active {
+  transform: translateY(0);
+}
+
+/* Сообщение об ошибке */
+.error {
+  margin-top: 16px;
+  padding: 12px;
+  background: #fed7d7;
+  color: #c53030;
+  border-radius: 12px;
+  font-size: 13px;
+  text-align: center;
+  border-left: 4px solid #c53030;
+  animation: shake 0.5s;
+}
+
+/* Валидация полей */
+.tokenFormValid {
+  composes: form;
+  border: 2px solid #48bb78;
+  box-shadow: 0 10px 25px rgba(72, 187, 120, 0.1);
+}
+
+.tokenFormInvalid {
+  composes: form;
+  border: 2px solid #f56565;
+  box-shadow: 0 10px 25px rgba(245, 101, 101, 0.1);
+}
+
+/* Анимация ошибки */
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* Разделитель */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.divider::before {
+  margin-right: 10px;
+}
+
+.divider::after {
+  margin-left: 10px;
+}
