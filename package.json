@@ -40,7 +40,9 @@
     ],
     "permissions": [
       "storage",
-      "cookies"
+      "cookies",
+      "scripting",
+      "declarativeNetRequest"
     ]
   }
 }
