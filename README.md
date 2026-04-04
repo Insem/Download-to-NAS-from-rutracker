@@ -1,33 +1,59 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+# Download to NAS from Rutracker
 
-## Getting Started
+Браузерное расширение, которое позволяет отправлять торренты со страниц **Rutracker** напрямую на ваш **NAS**.
 
-First, run the development server:
+## 📋 Описание
 
-```bash
-pnpm dev
-# or
-npm run dev
-```
+Расширение добавляет кнопку **«Скачать на NAS»** на страницы раздачи торрентов на `rutracker.org`. При нажатии на кнопку `.torrent` файл автоматически передается на ваш сервер, где должен быть запущен **qbittorrent-nox**.
 
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
+## ⚙️ Требования
 
-You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes. To add an options page, simply add a `options.tsx` file to the root of the project, with a react component default exported. Likewise to add a content page, add a `content.ts` file to the root of the project, importing some module and do some logic, then reload the extension on your browser.
+*   Браузер на базе Chromium (Google Chrome, Yandex Browser, Edge и т.д.).
+*   NAS с установленным и запущенным **qbittorrent-nox**.
+*   Доступ к веб-интерфейсу qbittorrent-nox из сети.
 
-For further guidance, [visit our Documentation](https://docs.plasmo.com/)
+## 🚀 Установка
 
-## Making production build
+Вы можете установить расширение одним из двух способов:
 
-Run the following:
+### Способ 1: Установка из релиза (рекомендуется)
+1.  Перейдите в раздел **Releases** этого репозитория.
+2.  Скачайте файл с расширением `.crx`.
+3.  Откройте страницу расширений вашего браузера (`chrome://extensions/`).
+4.  Включите **Режим разработчика** (обычно переключатель в правом верхнем углу).
+5.  Перетащите скачанный `.crx` файл в окно браузера.
 
-```bash
-pnpm build
-# or
-npm run build
-```
+### Способ 2: Установка из исходного кода
+1.  Склонируйте репозиторий:
+    ```bash
+    git clone https://github.com/Insem/Download-to-NAS-from-rutracker.git
+    ```
+2.  Перейдите в папку проекта и установите зависимости:
+    ```bash
+    npm install
+    ```
+3.  Соберите расширение:
+    ```bash
+    npm run build
+    ```
+4.  В браузере перейдите на страницу расширений (`chrome://extensions/`), включите **Режим разработчика** и нажмите **«Загрузить распакованное расширение»**, указав папку с собранным проектом.
 
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
+## 🔧 Настройка
 
-## Submit to the webstores
+Перед использованием необходимо настроить подключение к вашему NAS:
 
-The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
+1.  Откройте настройки расширения.
+2.  Укажите **Хост** (IP-адрес или домен вашего NAS).
+3.  Укажите **Путь** (папку для загрузки на NAS).
+4.  **Аутентификация:**
+    *   Нажмите кнопку **«Запросить токен»**.
+    *   После успешного получения токена нажмите **«Сохранить настройки»**.
+
+## 📥 Использование
+
+1.  Перейдите на любую страницу раздачи на сайте `rutracker.org`.
+2.  Рядом со стандартными кнопками вы увидите новую кнопку **«Скачать на NAS»**.
+3.  Нажмите на неё. Торрент будет добавлен в очередь загрузок вашего qbittorrent-nox на сервере.
+
+---
+*Проект распространяется по лицензии MIT.*
