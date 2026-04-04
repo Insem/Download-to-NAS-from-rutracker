@@ -2,8 +2,8 @@ import { sendToBackground } from "@plasmohq/messaging";
 import { log } from "console";
 import { useEffect, useState } from "react"
 
-import TorrentConfig from "~assets/types/torrent_config";
-import "~assets/css/popup.css"
+import TorrentConfig from "./assets/types/torrent_config";
+import "./assets/css/popup.css"
 
 function IndexPopup() {
   let [host, setHost] = useState("")
@@ -64,7 +64,6 @@ function IndexPopup() {
 
     try {
       const url = `http://${host}/api/v2/auth/login?username=${login}&password=${password}`;
-      console.log('--Token', host, login, password, url);
       await fetch(url, {
         method: 'POST'
       });

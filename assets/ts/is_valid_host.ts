@@ -23,6 +23,10 @@ export default function is_valid_host(hostString: string): boolean {
   }
 
   // Special validation for IPv4 addresses
+  if (host.startsWith("-") || host.endsWith("-") || /^\.|\.{2,}|\.$/.test(host)) {
+    return false;
+  }
+
   if (host.includes('.')) {
     const ipParts = host.split('.');
     if (ipParts.length === 4) {

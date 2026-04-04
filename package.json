@@ -7,35 +7,40 @@
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
-    "package": "plasmo package"
+    "package": "plasmo package",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "plasmo": "0.90.5",
     "@plasmohq/messaging": "0.6.0",
+    "plasmo": "0.90.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "4.1.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/chrome": "0.0.258",
+    "@types/jest": "^30.0.0",
     "@types/node": "20.11.5",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0",
     "prettier": "3.2.4",
+    "ts-jest": "^29.4.9",
     "typescript": "5.3.3"
   },
   "manifest": {
     "host_permissions": [
-    "http://*/*"  
+      "http://*/*"
     ],
     "permissions": [
-        "storage",
-        "webRequest",
-        "cookies",
-    "scripting",
-    "activeTab",
-    "declarativeNetRequest",
-    "declarativeNetRequestFeedback"
+      "storage",
+      "cookies"
     ]
   }
 }
