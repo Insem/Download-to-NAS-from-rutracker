@@ -2,7 +2,7 @@ import { sendToBackground } from "@plasmohq/messaging";
 import { log } from "console";
 import { useEffect, useState } from "react"
 
-import TorrentConfig from "~assets/types/popup";
+import TorrentConfig from "~assets/types/torrent_config";
 import "~assets/css/popup.css"
 
 function IndexPopup() {
@@ -11,7 +11,7 @@ function IndexPopup() {
   const [token, setToken] = useState("")
   const [login, setLogin] = useState("admin")
   const [password, setPassword] = useState("admin")
-  const [err, setErr] = useState("")
+  const [err, setErr] = useState(null)
   const [token_form_valid, setTokenFormValid] = useState(false);
 
 
@@ -48,12 +48,14 @@ function IndexPopup() {
       console.log('Отправленные данные:', torrent_config);
 
       await chrome.storage.local.set({ torrent_config });
+
+      setErr(null)
     } catch (e: Record<string, unknown>) {
       if (e.user_err) {
         setErr(e.message);
       }
 
-      console.error(e);
+      console.error(ERR_PREFIX, e);
     }
   };
 
@@ -61,22 +63,13 @@ function IndexPopup() {
     e.preventDefault();
 
     try {
-      host = "192.168.0.120:8080"
       const url = `http://${host}/api/v2/auth/login?username=${login}&password=${password}`;
       console.log('--Token', host, login, password, url);
-      const result = await fetch(url, {
+      await fetch(url, {
         method: 'POST'
       });
-      const options = {
-        method: "POST",
-        headers: {
-        }
-      }
-      //const cookies = token_res.headers
-      // console.log("TOKEN", chrome.cookies.get("SID"));
 
       chrome.cookies.get({ url, name: 'SID' }, function(cookie) {
-        // do something with the cookie
         const token = cookie?.value;
         if (!token || token == "") {
           return setErr("Failed to get Qbittorrent token. Check correctnes of your host")
@@ -88,11 +81,11 @@ function IndexPopup() {
       setLogin("");
       setPassword("");
     } catch (e: Record<string, unknown>) {
-      if (e.user_err) {
+      if (e.user_err || e.message == "Failed to fetch") {
         setErr(e.message);
       }
 
-      console.error(e);
+      console.dir(ERR_PREFIX, e);
     }
   };
 
@@ -115,19 +108,22 @@ function IndexPopup() {
         <button type="submit">Get token</button>
       </form>
 
-      <h5>{err}</h5>
+      {err && (
+        <div className="error">
+          {err}
+        </div>
+      )}
     </div>
   )
 }
 
-async function get_saved_torrent_config(): TorrentConfig | null {
+async function get_saved_torrent_config(): Promise<TorrentConfig | null> {
 
   let { torrent_config } = await chrome.storage.local.get(["torrent_config"]);
 
   if (!torrent_config || Object.keys(torrent_config).length === 0) {
     return null
   }
-  console.log('--GET saved', torrent_config);
   return torrent_config;
 }
 
